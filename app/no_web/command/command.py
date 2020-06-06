@@ -21,7 +21,7 @@ class Command:
 
     @classmethod
     def pars_param(cls, text):
-        result = re.findall(r"""([0-9]*?) *?,{0,1} *?""", text) #('{1,1}.*?'{1,1})
+        result = re.findall(r"""([0-9]*) *?,{1,1} *?""", text) #('{1,1}.*?'{1,1})
         print(result)
         if result is None: return ()
         return cls.process(result)
