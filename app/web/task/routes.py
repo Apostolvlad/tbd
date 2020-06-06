@@ -36,8 +36,9 @@ def all_task():
 @bp.route('/<task_id>', methods=['GET', 'POST'])
 @login_required
 def task(task_id): 
-    task = Task.query.filter_by(task_id = task_id).first_or_404()
-    task_finish = Task.query.filter_by(status = 0).first()
+    user = current_user
+    task = user.tasks.filter_by(task_id = task_id).first()
+    task_finish = Task.query.filter_by(status = 0, user_id = user.id).first()
     if not task_finish is None and task.id > task_finish.id: return redirect(url_for('task.task', task_id = task_finish.id))
     base_task = ManagerTask.get_task(task_id)
     name = base_task.name
@@ -45,16 +46,16 @@ def task(task_id):
     instruction = base_task.instruction
     example = base_task.example
     quest = base_task.quest
-    user = current_user
+    
     form, result = check_from(user)
     table_names = user.get_table_names()
     return render_template('task/task.html', **result, table_names = table_names, name = name, description = description, instruction = instruction, example = example, quest = quest, task = task, form = form)
 
 @bp.route("/finish/<task_id>")
 def finish(task_id):
-    task = Task.query.filter_by(task_id = task_id).first_or_404()
+    user = current_user
+    task = user.tasks.filter_by(task_id = task_id).first()
     if task.status == 1:
-        user = current_user
         score, errors = ManagerTask.check(task_id = task_id, user = user)
         task_name = ManagerTask.get_task(task_id = task_id).name
         task.status = 2
@@ -66,7 +67,8 @@ def finish(task_id):
 
 @bp.route("/restart/<task_id>")
 def restart(task_id):
-    task = Task.query.filter_by(task_id = task_id).first_or_404()
+    user = current_user
+    task = user.tasks.filter_by(task_id = task_id).first()
     if task.status == 2:
         task.status = 0
         task.score = 0
@@ -75,8 +77,9 @@ def restart(task_id):
 
 @bp.route("/start/<task_id>")
 def start(task_id):
-    task = Task.query.filter_by(task_id = task_id).first_or_404()
-    task_finish = Task.query.filter_by(status = 0).first()
+    user = current_user
+    task = user.tasks.filter_by(task_id = task_id).first()
+    task_finish = user.tasks.filter_by(task_id = task_id, status = 0).first()
     if not task_finish is None and task.id > task_finish.id: return redirect(url_for('task.task', task_id = task_finish.id))
     if task.status == 0:
         task.status = 1
