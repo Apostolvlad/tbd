@@ -29,6 +29,7 @@ class Command:
     def pars(cls, text):
         result = re.match(r'([A-Za-z_]*)\({1,1}', text) #\(.+?\)
         if result is None: return None, None
+        print('pars', text[result.end():-1])
         return result.group(1), cls.pars_param(text = text[result.end():-1])
     
     @classmethod
