@@ -21,7 +21,7 @@ class Command:
 
     @classmethod
     def pars_param(cls, text):
-        result = re.findall(r"""('{1,1}.*?'{1,1})|([0-9]*?) *?,{0,1} *?""", text)
+        result = re.findall(r"""([0-9]*?) *?,{0,1} *?""", text) #('{1,1}.*?'{1,1})
         if result is None: return ()
         return cls.process(result)
     
@@ -57,5 +57,5 @@ def test(*kwag, num1 = 0, num2 = 0):
 if __name__ == "__main__":
     c = Command()
     c.bind('create_table', test)
-    result = c.check("""create_table('test "tteest"', 1)""") #"test"
+    result = c.check("""rename_colomn(2, 'Название таблицы')""") #"test"
     print(result)
