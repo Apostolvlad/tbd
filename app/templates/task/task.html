@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+    <!-- ... -->
+    <style>
+        /* CSS: */
+        .main {
+        word-wrap: break-word;
+        }
+    </style>
+    <!-- ... onclick = "window.open(this.href); return false" -->
+    <table>
+        <tr valign="top">
+            <td>
+                <div class="main">
+                    <h1>{{name}}</h1>
+                    <h3>Описание:</h3>
+                    <p class="lead">{{ description }}</p>
+                    <h3>Инструкция:</h3>
+                    <p class="lead">{{ instruction }}</p>
+                    <h3>Пример использования команды:</h3>
+                    <p class="lead">{{ example }}</p>
+                    <h2>Задание:</h2>
+                    <p class="lead">{{ quest }}</p>
+                    {%if task.status == 0 %}
+                        <a class="btn btn-success" href="{{url_for('task.start', task_id = task.task_id)}}" role="button">Начать выполнение</a> 
+                    {%elif task.status == 1 %}
+                        <a class="btn btn-danger" href="{{url_for('task.finish', task_id = task.task_id)}}" role="button">Сдать выполнение</a>
+                    {%elif task.status == 2 %}
+                        <p class="lead" >Вы уже выполнили это задание</p>
+                        <a class="btn btn-danger" href="{{url_for('task.restart', task_id = task.task_id)}}" role="button">Начать выполнение заново</a>
+                    {%endif%}
+                    <a class="btn btn-primary" href="{{url_for('task.all_task')}}" role="button">Вернутся к листу заданий</a>
+                    {% if task.status == 1 %}
+                        {% include '_console.html' %}
+                    {%endif%}
+                </div>
+            </td>
+        </tr>
+    </table>
+{% endblock %}

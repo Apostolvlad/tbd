@@ -1,0 +1,10 @@
+{% import 'bootstrap/wtf.html' as wtf %}
+{% include '_table.html' %}
+<div class="alert alert-warning" role="alert">
+    Ваши таблицы:
+    {% for item in table_names %}
+        {{item}},
+    {% endfor %}
+</div>
+<p>Для работы с таблицей введите команду.</p>
+{{wtf.quick_form(form)}}

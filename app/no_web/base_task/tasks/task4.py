@@ -1,0 +1,25 @@
+from app.no_web.base_task import ManagerTask, Table
+colomn_names = ('Название', 'Возраст', 'Местообитание', 'Размер')
+def check(user):
+    result_count = 100
+    result = list()
+    table = Table.get_table('Животные', user)
+    names = list()
+    for col in table.cols: names.append(col.name)
+    if len(colomn_names) != len(names):
+        result.append(f'Количество столбцов не соотвествует заданию. {len(colomn_names)} != {len(names)}')
+        result_count -= 40
+    for name in colomn_names:
+        if names.count(name) == 0: 
+            result.append(f'Отсутствует столбец {name}')
+            result_count -= 60 / len(colomn_names)
+    return result_count, result
+
+task = ManagerTask.add(
+    name = """Добавление столбцов""",
+    description = """Обычно таблицы представлены в виде столбцов, и строк. Поэтому в этом задании показано, как создаются столбцы.""",
+    instruction = """Для добавления столбца используйте команду add_colomn('Название столбца')""",
+    example = """add_colomn('Название столбца')""",
+    quest = f"""Добавьте в таблицу Животные, такие столбцы: {', '.join(colomn_names)}""",
+    check_func = check
+)

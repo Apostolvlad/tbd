@@ -1,0 +1,31 @@
+<h1>{{table_title}}</h1>
+<div class="table-responsive">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>#</th>
+                {% for name in cols %}
+                    <th>{{name}}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in rows %}
+                <tr>
+                    <th scope="row">{{ loop.index }}</th>
+                    {% for item in row %}
+                        {% if item is number %}
+                            <td>{{item}}</td>
+                        {% elif item is string %}
+                            <td>{{item}}</td>
+                        {% elif item|length == 2 %}
+                            <td><a href= {{item[0]}}>{{item[1]}}</a></td>
+                        {% else %}
+                            <td>{{item}}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

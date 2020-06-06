@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+    <tr valign="top">
+        <td>
+            <div class="main">
+                <h1>{{title}}</h1>
+                <h3>Вы выполнили задание на {{procent}}%</h3>
+                {% if errors %}
+                    <p class="lead">Ошибки:</p>
+                    <div class="alert alert-warning">
+                        <ul>
+                            {% for message in errors %}
+                                <li>{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {%else%}
+                    <p class="lead">Задание выполнено без ошибок.</p>
+                {% endif %}
+                <a class="btn btn-primary" href="{{url_for('task.all_task')}}" role="button">Вернутся к листу заданий</a>
+            </div>
+        </td>
+    </tr>
+{% endblock %}
+
+
