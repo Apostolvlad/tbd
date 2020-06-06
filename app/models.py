@@ -35,9 +35,11 @@ class User(UserMixin, db.Model):
         db.session.commit()
     
     def table(self):
-        if self.table_id == None: self.table_id = 1
-        if self.tables.count() > self.table_id - 1:
-            return self.tables[self.table_id - 1]
+        if self.table_id == None: self.table_id = 0
+        if self.tables.count() > self.table_id:
+            return self.tables[self.table_id]
+        elif self.tables.count() > 0:
+            return self.tables[0]
         else:
             return None
     
