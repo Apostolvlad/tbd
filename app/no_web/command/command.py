@@ -1,10 +1,19 @@
 import re
-from app.models import Table
+from app.models import Table, db
 class Command:
     __command = dict()
 
     @classmethod
     def bind(cls, command, func): cls.__command.update({command:func}) 
+
+    @classmethod
+    def isfloat(cls, value):
+        try:
+            float(value)
+            return True
+        except ValueError:
+            return False
+        return 2  
 
     @classmethod
     def process(cls, params):
@@ -15,13 +24,15 @@ class Command:
             if e != '':
                 if e.isdigit():
                     result2.append(int(e))
+                elif cls.isfloat(e):
+                    result2.append(float(e))
                 else:
                     result2.append(e.replace("'", ''))
         return result2
 
     @classmethod
     def pars_param(cls, text):
-        result = re.findall(r"""('{1,1}.*?'{1,1})|([0-9]+) *?,{0,1} *?""", text)
+        result = re.findall(r"""('{1,1}.*?'{1,1})|([0-9]+|\.{0,1}[0-9]+) *?,{0,1} *?""", text)
         if result is None: return ()
         return cls.process(result)
     
@@ -29,7 +40,6 @@ class Command:
     def pars(cls, text):
         result = re.match(r'([A-Za-z_]*)\({1,1}', text) #\(.+?\)
         if result is None: return None, None
-        print('pars', text[result.end():-1])
         return result.group(1), cls.pars_param(text = text[result.end():-1])
     
     @classmethod
@@ -40,13 +50,16 @@ class Command:
         if func is None: return f"""Команда не правильно написана!\nКоманда = {command},\nПараметры = {params}."""
         try:
             if len(params) and len(kwag):
-                return func(*params, **kwag)
+                result = func(*params, **kwag)
             elif len(params):
-                return func(*params)
+                result =  func(*params)
             elif len(kwag):
-                return func(**kwag)
+                result = func(**kwag)
             else:
-                return funс()
+                result = funс()
+            db.session.commit()
+            print(result)
+            return result
         except Exception as e:
             return f"""Ошибка = {e}!\nКоманда = {command},\nПараметры = {params}."""
 

@@ -32,16 +32,11 @@ class User(UserMixin, db.Model):
     
     def select_table(self, table_id):
         self.table_id = table_id
-        db.session.commit()
+        #db.session.commit()
     
-    def table(self):
-        if self.table_id == None: self.table_id = 0
-        if self.tables.count() > self.table_id:
-            return self.tables[self.table_id]
-        elif self.tables.count() > 0:
-            return self.tables[0]
-        else:
-            return None
+    def table(self): return self.tables.filter_by(id = self.table_id).first()
+    
+    def get_table(self, name): return self.tables.filter_by(name = name).first()
     
 
 '''
@@ -107,23 +102,35 @@ class Table(db.Model):
         for col in self.cols: result.append(col.name)
         return result
     
-    def add_row(self):
-        row = RowTable()
+    def add_row(self, values = ()):
+        row = RowTable(values = values)
         self.rows.append(row)
+        #db.session.commit()
+        return True # ИД добавленной строки
+    
+    def get_row(self, index):
+        if index < self.rows.count(): return self.rows[index]
+        return None
+
+    def del_row(self, index):
+        row = self.get_row(index)
+        if row is None: return False
+        row.del_row()
+        return True
     
     def add_col(self, name):
         col = ColTable(name = name)
         self.cols.append(col)
-        db.session.commit()
+        #db.session.commit()
         return True
     
     def get_col(self, index_col):
-        if self.cols.count() > 0 and self.cols.count() > index_col - 1: return self.cols[index_col - 1]
+        if self.cols.count() > 0 and self.cols.count() > index_col: return self.cols[index_col]
         return False
 
     def del_col(self, index_col):
         col = self.get_col(index_col)
-        if col:
+        if not col is None:
             return col.del_col()
         else:
             return False
@@ -132,10 +139,15 @@ class Table(db.Model):
         col = self.get_col(index_col)
         if col:
             col.name = name
-            db.session.commit()
+            #db.session.commit()
         else:
             return False
         return True
+    
+    def set_row(self, index_row, index_col, value):
+        row = self.get_row(index_row)
+        if row is None: return False
+        return row.set_value(index_col, value)
     
     @classmethod
     def get_table(cls, name, user):
@@ -150,14 +162,15 @@ class Table(db.Model):
             table = cls(name = name)
             user.tables.append(table)
             db.session.commit()
-            return table.id
+            return table
         else:
             return False
 
-    @classmethod
-    def del_table(cls, name, user):
-        result = db.session.query(cls).filter(cls.name == name, cls.user_id == user.id).delete()#db.session.query(cls.user.tables).filter(cls.name == name).delete()#
-        db.session.commit()
+    def del_table(self):
+        for e in self.rows:e.del_row()
+        for e in self.cols:e.del_col()
+        result = db.session.query(Table).filter(Table.name == self.name, Table.user_id == self.user_id).delete()#db.session.query(cls.user.tables).filter(cls.name == name).delete()#
+        #db.session.commit()
         return result
 
 
@@ -169,11 +182,11 @@ class ColTable(db.Model):
     name = db.Column(db.String(255)) # название столбца
     
     def __repr__(self):
-        return '<ColTable {}>'.format(self.name)   
+        return self.name
     
     def del_col(self):
         result = db.session.query(ColTable).filter(ColTable.name == self.name, ColTable.table_id == self.table_id).delete()#db.session.query(cls.user.tables).filter(cls.name == name).delete()#
-        db.session.commit()
+        #db.session.commit()
         return True
 
 class RowTable(db.Model):
@@ -182,12 +195,36 @@ class RowTable(db.Model):
     items = db.relationship('ItemTable', backref='row', lazy='dynamic') 
     
     def __repr__(self):
-        return '<RowTable {}>'.format(table_id)  
+        return f'<RowTable {self.table_id}>'  
+
+    def __init__(self, values):
+        for value in values: self.add_item(value)
 
     def row(self):
         result = list()
         for item in self.items: result.append(item.item())
         return result
+    
+    def add_item(self, value):
+        item = ItemTable(value)
+        self.items.append(item)
+        return True
+    
+    def get_item(self, index):
+        if index < self.items.count(): return self.items[index]
+        return None
+    
+    def set_value(self, index, value):
+        item = self.get_item(index)
+        if item is None: return False
+        item.set_value(value)
+        return True
+    
+    def del_row(self):
+        for e in self.items:e.del_item()
+        result = db.session.query(RowTable).filter(RowTable.id == self.id, RowTable.table_id == self.table_id).delete()#db.session.query(cls.user.tables).filter(cls.name == name).delete()#
+        #db.session.commit()
+        return True
     
 
 class ItemTable(db.Model):
@@ -199,6 +236,21 @@ class ItemTable(db.Model):
     def __repr__(self):
         return '<ItemTable {}>'.format(self.item_type, self.item_value)
 
+    def __init__(self, item_value):
+        self.set_value(item_value)
+    
+    def set_value(self, value):
+        self.item_value = str(value)
+        self.item_type = self.get_type(value)
+        #db.session.commit()
+
+    def get_type(self, value):
+        if type(value) is int:#digit():
+            return 0
+        elif type(value) is float:
+            return 1
+        return 2      
+
     def item(self):
         result = self.item_value
         if self.item_type == 0:
@@ -208,6 +260,10 @@ class ItemTable(db.Model):
         elif self.item_type == 2:
             result = str(result)
         return result
+    
+    def del_item(self):
+        result = db.session.query(ItemTable).filter(ItemTable.id == self.id, ItemTable.row_id == self.row_id).delete()#db.session.query(cls.user.tables).filter(cls.name == name).delete()#
+        return True
 
 
 

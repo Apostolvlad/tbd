@@ -1,1 +1,1 @@
-from . import create_table, del_table, select_table, add_colomn, del_colomn, rename_colomn
+from . import create_table, del_table, select_table, add_colomn, del_colomn, rename_colomn, add_row, del_row, set_row, create_test

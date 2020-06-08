@@ -42,9 +42,6 @@ def create_app(config_class=Config):
     from app.web.task import bp as task_bp
     app.register_blueprint(task_bp, url_prefix='/task')
 
-    from app.web.console import bp as console_bp
-    app.register_blueprint(console_bp, url_prefix='/console')
-
     if not app.debug and not app.testing:
         if app.config['MAIL_SERVER']:
             auth = None

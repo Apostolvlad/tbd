@@ -3,7 +3,7 @@ from app.no_web.base_task import ManagerTask, Table
 def check(user):
     result_count = 100
     result = list()
-    table = Table.get_table('Животные', user)
+    table = user.get_table('Животные')
     count = user.tables.count()
     if table is None: 
         result.append('Таблица с именем Животные не найдена!')

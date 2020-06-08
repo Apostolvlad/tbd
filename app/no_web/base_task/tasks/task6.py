@@ -3,9 +3,8 @@ from app.no_web.base_task import ManagerTask, Table
 def check(user):
     result_count = 100
     result = list()
-    table = Table.get_table('Животные', user)
-    names = list()
-    for col in table.cols: names.append(col.name)
+    table = user.table() # тут надо таблицу Животные искать...
+    names = table.get_cols()
     if 1 != len(names):
         result.append(f'Количество столбцов не соотвествует заданию. 1 != {len(names)}')
         result_count -= 100

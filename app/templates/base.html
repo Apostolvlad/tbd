@@ -51,4 +51,22 @@
         {# содержимое приложения которое должно быть предоставлено в блоке app_content #}
         {% block app_content %}{% endblock %}
     </div>
+    <script language=javaScript>
+    var message="";
+    function clickIE() {if (document.all) {(message);return false;}}
+    function clickNS(e) {if
+    (document.layers||(document.getElementById&&!document.all)) {
+    if (e.which==2) {
+    (message);
+    return false;}}}
+    if (document.layers) {
+    document.captureEvents(Event.MOUSEDOWN);
+    document.onmousedown=clickNS;
+    }else{
+    document.onmouseup=clickNS;
+    document.oncontextmenu=clickIE;
+    }
+    document.oncontextmenu=new Function("return false")
+    </script>
+    <script language=javaScript>document.onselectstart=new Function("return false");document.ondragstart=new Function("return false");</script>
 {% endblock %}
