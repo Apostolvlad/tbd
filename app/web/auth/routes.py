@@ -17,6 +17,7 @@ def login():
             flash('Ошибка логина или пароля.')
             return redirect(url_for('auth.login'))
         login_user(user, remember = form.remember_me.data)
+        return redirect(url_for('main.index'))
     return render_template('auth/login.html', title = 'Авторизация', form = form)
 
 @bp.route('/register', methods = ['GET', 'POST'])

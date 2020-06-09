@@ -79,6 +79,7 @@ def task(task_id):
     return render_template('task/task.html', **result, table_names = table_names, name = name, description = description, instruction = instruction, example = example, quest = quest, task = task, form = form)
 
 @bp.route("/finish/<task_id>")
+@login_required
 def finish(task_id):
     user = current_user
     task = user.tasks.filter_by(task_id = task_id).first()
@@ -94,6 +95,7 @@ def finish(task_id):
         return redirect(url_for('task.task', task_id = task_id))
 
 @bp.route("/restart/<task_id>")
+@login_required
 def restart(task_id):
     user = current_user
     task = user.tasks.filter_by(task_id = task_id).first()
@@ -104,6 +106,7 @@ def restart(task_id):
     return redirect(url_for('task.task', task_id = task_id))
 
 @bp.route("/start/<task_id>")
+@login_required
 def start(task_id):
     user = current_user
     task = user.tasks.filter_by(task_id = task_id).first()

@@ -38,7 +38,6 @@ def user_show(username):
             time_itog = round((task.finish_time - task.start_time).total_seconds() / 60, 2)
 
         rows.append([score_text[task.status], task.score, start_time, finish_time, time_itog]) #
-    print(rows)
     return render_template('user.html', user = user, cols = ('Статус', 'Успешность выполнения', 'Дата начала выполнения', 'Дата завершения выполнения', 'Времени затрачено (минут)'), rows = rows, table_title = 'Задания')
 
 
