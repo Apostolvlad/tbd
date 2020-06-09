@@ -13,9 +13,12 @@ def check(user):
         types = list()
         for row in table.rows:
             for e in row.items:types.append(e.item_type)
-        r1 = types.count(0) / len(types) * 100
-        r2 = types.count(1) / len(types) * 100
-        r3 = types.count(2) / len(types) * 100
+        r1 = 0
+        r2 = 0
+        r3 = 0
+        if types.count(0) != 0: r1 = types.count(0) / len(types) * 100
+        if types.count(1) != 0: r2 = types.count(1) / len(types) * 100
+        if types.count(2) != 0: r3 = types.count(2) / len(types) * 100
         max = 0
         if r1 > max:max = r1
         if r2 > max:max = r2

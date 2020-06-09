@@ -14,9 +14,12 @@ def check(user):
         types = list()
         for row in table.rows:
             for e in row.items:types.append(e.item_type)
-        r1 = int(types.count(0) / len(types) * 100)
-        r2 = int(types.count(1) / len(types) * 100)
-        r3 = int(types.count(2) / len(types) * 100)
+        r1 = 0
+        r2 = 0
+        r3 = 0
+        if types.count(0) != 0: r1 = types.count(0) / len(types) * 100
+        if types.count(1) != 0: r2 = types.count(1) / len(types) * 100
+        if types.count(2) != 0: r3 = types.count(2) / len(types) * 100
         max = 0
         if r1 != r2 and r2 != r3 and r1 != r3:
             result.append(f'Процент строк цифрового типа = {r1}')

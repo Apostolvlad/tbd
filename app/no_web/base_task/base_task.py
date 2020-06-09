@@ -26,7 +26,10 @@ class ManagerTask:
     @classmethod
     def check(cls, task_id, user):
         task = cls.get_task(task_id)
-        return task.check_func(user = user)
+        try:
+            return task.check_func(user = user)
+        except Exception as e:
+            return 0, (e,)
     
     @classmethod
     def get_task(cls, task_id):
