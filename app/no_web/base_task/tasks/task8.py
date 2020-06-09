@@ -3,10 +3,14 @@ from app.no_web.base_task import ManagerTask, Table
 def check(user):
     result_count = 100
     result = list()
-    table = Table.get_table('Животные', user)
-    if table.rows.count() != 6:
-        result.append(f'Количество строк не соотвествует заданию. {table.rows.count()} != 6')
+    table = user.get_table('Животные')
+    if table is None:
+        result.append('Таблица с именем Животные не найдена!')
         result_count -= 100
+    else:
+        if table.rows.count() != 6:
+            result.append(f'Количество строк не соотвествует заданию. {table.rows.count()} != 6')
+            result_count -= 100
     return result_count, result
 
 task = ManagerTask.add(

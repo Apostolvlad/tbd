@@ -3,11 +3,15 @@ from app.no_web.base_task import ManagerTask, Table
 def check(user):
     result_count = 100
     result = list()
-    table = user.table() # тут надо таблицу Животные искать...
-    names = table.get_cols()
-    if 1 != len(names):
-        result.append(f'Количество столбцов не соотвествует заданию. 1 != {len(names)}')
+    table = user.get_table('Животные')
+    if table is None:
+        result.append('Таблица с именем Животные не найдена!')
         result_count -= 100
+    else:
+        names = table.get_cols()
+        if 1 != len(names):
+            result.append(f'Количество столбцов не соотвествует заданию. 1 != {len(names)}')
+            result_count -= 100
     return result_count, result
 
 task = ManagerTask.add(

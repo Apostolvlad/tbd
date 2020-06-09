@@ -51,35 +51,33 @@ def get_table_rows():
 def check(user):
     result_count = 100
     result = list()
-    table = Table.get_table('Тестовая таблица для задания 10', user)
-    if table.rows.count() != 13:
-        result.append(f'Количество строк не соотвествует заданию. {table.rows.count()} != 13')
-        result_count -= abs(table.rows.count() - 13) * 5
-    
-    for col in table.cols:
-        if not symbol_errors.count(col):
-            result.append(f'Название столбца не исправлено = {col}')
-            result_count -= 10
-    
-
-    errors = 0
-    for i2, row in enumerate(table.rows):
-        for i, e in enumerate(row.items.all()):
-            if e.item() == '': 
-                result.append(f'#{i2}|{i} - пустая ячейка')
-                errors += 1
-            elif (i == 0 or i == 2) and e.item_type != 2: 
-                errors += 1
-                result.append(f'#{i2}|{i} - не является строкой = {e.item()}')
-            else:
-                if (i == 1 or i == 3) and e.item_type != 0: 
+    table = user.get_table('Тестовая таблица для задания 10')
+    if table is None:
+        result.append('Таблица с именем Тестовая таблица для задания 10 не найдена!')
+        result_count -= 100
+    else:
+        if table.rows.count() != 13:
+            result.append(f'Количество строк не соотвествует заданию. {table.rows.count()} != 13')
+            result_count -= abs(table.rows.count() - 13) * 5
+        for col in table.cols:
+            if not symbol_errors.count(col):
+                result.append(f'Название столбца не исправлено = {col}')
+                result_count -= 10
+        errors = 0
+        for i2, row in enumerate(table.rows):
+            for i, e in enumerate(row.items.all()):
+                if e.item() == '': 
+                    result.append(f'#{i2}|{i} - пустая ячейка')
                     errors += 1
-                    result.append(f'#{i2}|{i} - не является числом = {e.item()}')
-
-        
-    result_count -= errors
-    result.append(f'Всего ошибок в строках = {errors}')
-
+                elif (i == 0 or i == 2) and e.item_type != 2: 
+                    errors += 1
+                    result.append(f'#{i2}|{i} - не является строкой = {e.item()}')
+                else:
+                    if (i == 1 or i == 3) and e.item_type != 0: 
+                        errors += 1
+                        result.append(f'#{i2}|{i} - не является числом = {e.item()}')
+        result_count -= errors
+        result.append(f'Всего ошибок в строках = {errors}')
     return result_count, result
 
 task = ManagerTask.add(

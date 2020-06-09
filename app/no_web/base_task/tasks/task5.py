@@ -3,18 +3,23 @@ from .task4 import colomn_names
 def check(user):
     result_count = 100
     result = list()
-    table = Table.get_table('Животные', user)
-    names = list()
-    for col in table.cols: names.append(col.name)
-    if len(colomn_names) != len(names):
-        result.append(f'Количество столбцов не соотвествует заданию. {len(colomn_names)} != {len(names)}')
-        result_count -= 50
-    if names.count('Вес') == 0:
-        result.append(f'Отсутствует столбец Вес')
-        result_count -= 25
-    if names.count('Размер') != 0:
-        result.append(f'Столбец Размер не был изменён')
-        result_count -= 25
+
+    table = user.get_table('Животные')
+    if table is None:
+        result.append('Таблица с именем Животные не найдена!')
+        result_count -= 100
+    else:
+        names = list()
+        for col in table.cols: names.append(col.name)
+        if len(colomn_names) != len(names):
+            result.append(f'Количество столбцов не соотвествует заданию. {len(colomn_names)} != {len(names)}')
+            result_count -= 50
+        if names.count('Вес') == 0:
+            result.append(f'Отсутствует столбец Вес')
+            result_count -= 25
+        if names.count('Размер') != 0:
+            result.append(f'Столбец Размер не был изменён')
+            result_count -= 25
     return result_count, result
 
 task = ManagerTask.add(

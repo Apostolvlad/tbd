@@ -67,6 +67,8 @@ class Task(db.Model):
     task_id = db.Column(db.String(140))
     status = db.Column(db.Integer()) # статус выполнения 0 - не выполнено 1 - выполнено
     score = db.Column(db.Integer()) # процент выполнения задания.
+    start_time = db.Column(db.DateTime, default = datetime.utcnow)
+    finish_time = db.Column(db.DateTime, default = datetime.utcnow)
 
     def __repr__(self):
         return '<Table {}>'.format(self.name)

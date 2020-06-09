@@ -18,6 +18,8 @@
                             <td>{{item}}</td>
                         {% elif item is string %}
                             <td>{{item}}</td>
+                        {% elif item|length == 1 %}
+                            <td>{{moment(item[0]).format('LLL')}}</td>
                         {% elif item|length == 2 %}
                             <td><a href= {{item[0]}}>{{item[1]}}</a></td>
                         {% else %}

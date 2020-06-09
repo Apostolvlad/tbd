@@ -1,22 +1,21 @@
 import re
 from app.models import Table, db
 class Command:
-    __command = dict()
+    __command = dict() # словарь в котором хранятся команды и функции которые должны выполнятся при их использовании
 
     @classmethod
-    def bind(cls, command, func): cls.__command.update({command:func}) 
+    def bind(cls, command, func): cls.__command.update({command:func}) # метод класса, для добавления новых команд и функции.
 
     @classmethod
-    def isfloat(cls, value):
+    def isfloat(cls, value): # функция для проверки типа данных - Дробные числа.
         try:
             float(value)
-            return True
+            return True 
         except ValueError:
             return False
-        return 2  
 
     @classmethod
-    def process(cls, params):
+    def process(cls, params): # функция для преобразования полученных параметров в требуемые типы данных.
         result = list()
         for e in params: result.extend(list(e))
         result2 = list()
@@ -31,19 +30,19 @@ class Command:
         return result2
 
     @classmethod
-    def pars_param(cls, text):
+    def pars_param(cls, text): # функция для извлечения параметров из строки параметров.
         result = re.findall(r"""('{1,1}.*?'{1,1})|([0-9]+|\.{0,1}[0-9]+) *?,{0,1} *?""", text)
         if result is None: return ()
         return cls.process(result)
-    
+
     @classmethod
-    def pars(cls, text):
-        result = re.match(r'([A-Za-z_]*)\({1,1}', text) #\(.+?\)
+    def pars(cls, text): # функция для извлечения тела функции и параметров функции.
+        result = re.match(r'([A-Za-z_]*)\({1,1}', text) 
         if result is None: return None, None
         return result.group(1), cls.pars_param(text = text[result.end():-1])
-    
+
     @classmethod
-    def check(cls, text, **kwag):
+    def check(cls, text, **kwag): # функция для определения полученной команды, и её выполнения.
         command, params = cls.pars(text)
         if command is None: return f"""Команда не определена!\nТекст = {text}"""
         func = cls.__command.get(command)
@@ -57,11 +56,15 @@ class Command:
                 result = func(**kwag)
             else:
                 result = funс()
-            db.session.commit()
-            print(result)
+            db.session.commit() # после выполнения команды, сохраняем изменения в базе данных.
             return result
         except Exception as e:
             return f"""Ошибка = {e}!\nКоманда = {command},\nПараметры = {params}."""
+
+
+
+
+
 
 def test(*kwag, num1 = 0, num2 = 0):
     print(*kwag, num1, num2)

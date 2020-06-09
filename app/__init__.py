@@ -7,15 +7,18 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_mail import Mail
 from flask_bootstrap import Bootstrap
+from flask_moment import Moment
 from config import Config
 
 db = SQLAlchemy()
 migrate = Migrate()
+
 login = LoginManager()
 login.login_view = 'auth.login'
 login.login_message = "Пожалуйста, войдите, чтобы открыть эту страницу."
 mail = Mail()
 bootstrap = Bootstrap()
+moment= Moment()
 
 def create_app(config_class=Config):
     app = Flask(__name__)
@@ -25,6 +28,7 @@ def create_app(config_class=Config):
     migrate.init_app(app, db)
     login.init_app(app)
     mail.init_app(app)
+    moment.init_app(app) 
     bootstrap.init_app(app)
 
     from app.web.errors import bp as errors_bp

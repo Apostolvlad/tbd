@@ -3,7 +3,8 @@ from app.no_web.base_task import ManagerTask, Table
 def check(user):
     result_count = 100
     result = list()
-    if user.table().name != 'Животные':
+    table = user.table()
+    if table is None or table.name != 'Животные':
         result.append('Таблица с именем Животные не выбрана!')
         result_count -= 100
     return result_count, result

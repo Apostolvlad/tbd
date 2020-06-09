@@ -3,16 +3,20 @@ colomn_names = ('Название', 'Возраст', 'Местообитани�
 def check(user):
     result_count = 100
     result = list()
-    table = Table.get_table('Животные', user)
-    names = list()
-    for col in table.cols: names.append(col.name)
-    if len(colomn_names) != len(names):
-        result.append(f'Количество столбцов не соотвествует заданию. {len(colomn_names)} != {len(names)}')
-        result_count -= 40
-    for name in colomn_names:
-        if names.count(name) == 0: 
-            result.append(f'Отсутствует столбец {name}')
-            result_count -= 60 / len(colomn_names)
+    table = user.get_table('Животные')
+    if table is None:
+        result.append('Таблица с именем Животные не найдена!')
+        result_count -= 100
+    else:
+        names = list()
+        for col in table.cols: names.append(col.name)
+        if len(colomn_names) != len(names):
+            result.append(f'Количество столбцов не соотвествует заданию. {len(colomn_names)} != {len(names)}')
+            result_count -= 40
+        for name in colomn_names:
+            if names.count(name) == 0: 
+                result.append(f'Отсутствует столбец {name}')
+                result_count -= 60 / len(colomn_names)
     return result_count, result
 
 task = ManagerTask.add(

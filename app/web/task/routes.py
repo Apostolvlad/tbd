@@ -6,6 +6,7 @@ from app.web.task import bp
 from app.no_web.base_task import ManagerTask
 from app.web.task.forms import CommandForm
 from app.no_web.command import Command
+from datetime import datetime
 
 def check_from(user):
     form = CommandForm()
@@ -86,6 +87,7 @@ def finish(task_id):
         task_name = ManagerTask.get_task(task_id = task_id).name
         task.status = 2
         task.score = score
+        task.finish_time = datetime.utcnow()
         db.session.commit()
         return render_template('task/finish.html', title = task_name, procent = task.score, errors = errors)
     else:
@@ -109,6 +111,7 @@ def start(task_id):
     if not task_finish is None and task.id > task_finish.id: return redirect(url_for('task.task', task_id = task_finish.id))
     if task.status == 0:
         task.status = 1
+        task.start_time = datetime.utcnow()
         db.session.commit()
     return redirect(url_for('task.task', task_id = task_id))
 
