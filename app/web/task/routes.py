@@ -105,6 +105,8 @@ def restart(task_id):
     if task.status == 2:
         task.status = 0
         task.score = 0
+        task.start_time = None
+        task.finish_time = None
         db.session.commit()
     return redirect(url_for('task.task', task_id = task_id))
 

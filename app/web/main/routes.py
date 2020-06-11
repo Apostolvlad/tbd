@@ -26,18 +26,23 @@ score_text = ('Не выполнено', 'Выполняется', 'Выполн
 def user_show(username):
     user = User.query.filter_by(username = username).first_or_404()
     tasks = user.tasks.all()
-    rows = list()
+    rows = ['', '', '', '', '', '', '', '', '', '']
     for task in tasks:
         start_time = (task.start_time,)
         finish_time = (task.finish_time,)
         time_itog = 0
-        if start_time[0] is None or task.status == 0: start_time = 0
-        if finish_time[0] is None or task.status != 2: 
+        try:
+            if start_time[0] is None or task.status == 0: start_time = 0
+            if finish_time[0] is None or task.status != 2: 
+                finish_time = 0
+            else:
+                time_itog = round((task.finish_time - task.start_time).total_seconds() / 60, 2)
+        except:
+            start_time = 0
             finish_time = 0
-        else:
-            time_itog = round((task.finish_time - task.start_time).total_seconds() / 60, 2)
+            time_itog = 0
 
-        rows.append([score_text[task.status], task.score, start_time, finish_time, time_itog]) #
+        rows[int(task.task_id) - 1] = [score_text[task.status], task.score, start_time, finish_time, time_itog] #
     return render_template('user.html', user = user, cols = ('Статус', 'Успешность выполнения', 'Дата начала выполнения', 'Дата завершения выполнения', 'Времени затрачено (минут)'), rows = rows, table_title = 'Задания')
 
 
