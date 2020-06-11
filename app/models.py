@@ -208,13 +208,17 @@ class RowTable(db.Model):
         return result
     
     def add_item(self, value):
-        item = ItemTable(value)
+        item = ItemTable(value, index = self.items.count())
         self.items.append(item)
         return True
     
+    def test_count(self): 
+        while self.table.cols.count() > self.items.count(): self.add_item('')
+        for i, e in enumerate(self.items.all()): e.index = i
+
     def get_item(self, index):
-        if index < self.items.count(): return self.items[index]
-        return None
+        self.test_count()
+        return self.items.filter_by(index = index).first()#if index < self.items.count(): return self.items[index]
     
     def set_value(self, index, value):
         item = self.get_item(index)
@@ -232,13 +236,15 @@ class RowTable(db.Model):
 class ItemTable(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     row_id = db.Column(db.Integer, db.ForeignKey('row_table.id'))
+    index = db.Column(db.Integer())
     item_type = db.Column(db.Integer())
     item_value = db.Column(db.String(200)) # значение
 
     def __repr__(self):
         return '<ItemTable {}>'.format(self.item_type, self.item_value)
 
-    def __init__(self, item_value):
+    def __init__(self, item_value, index):
+        self.index = index
         self.set_value(item_value)
     
     def set_value(self, value):
