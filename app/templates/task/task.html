@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block app_content %}
+{% block app_content2 %}
     <!-- ... -->
     <style>
         /* CSS: */
@@ -31,11 +31,13 @@
                         <a class="btn btn-danger" href="{{url_for('task.restart', task_id = task.task_id)}}" role="button">Начать выполнение заново</a>
                     {%endif%}
                     <a class="btn btn-primary" href="{{url_for('task.all_task')}}" role="button">Вернутся к листу заданий</a>
-                    {% if task.status == 1 %}
-                        {% include '_console.html' %}
-                    {%endif%}
                 </div>
             </td>
         </tr>
     </table>
+{% endblock %}
+{% block app_content %}
+    {% if task.status == 1 %}
+    {% include '_console.html' %}
+    {%endif%}
 {% endblock %}

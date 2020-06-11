@@ -37,9 +37,7 @@
 
 {% block content %}
     <div class="container">
-        <div>
-
-        </div>
+        {% block app_content2 %}{% endblock%}
         {% with messages = get_flashed_messages() %}
             {% if messages %}
                 {% for message in messages %}

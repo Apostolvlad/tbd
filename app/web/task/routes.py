@@ -13,7 +13,10 @@ def check_from(user):
     if form.validate_on_submit():
         command = form.command.data
         result = Command.check(command, user = user, form = form)
-        flash(result)
+        if type(result) is str:
+            flash(result)
+        else:
+            for e in result: flash(e)
         form.command.data = ''
         #return redirect(url_for('table.table', table_id = table_id))
     elif request.method == 'GET':

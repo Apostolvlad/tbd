@@ -15,7 +15,7 @@ def create_test(user, form):
     for elements in task10.get_table_rows(): add_row(*elements, user = user, form = form)
 
     #user.select_table(result)
-    if True: return f'''Таблица Тестовая таблица для задания 10 успешно создана!'''
+    return f'''Таблица Тестовая таблица для задания 10 успешно создана!'''
     
 
 #create_test()
