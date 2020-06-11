@@ -214,7 +214,8 @@ class RowTable(db.Model):
     
     def test_count(self): 
         while self.table.cols.count() > self.items.count(): self.add_item('')
-        for i, e in enumerate(self.items.all()): e.index = i
+        for i, e in enumerate(self.items.all()): 
+            if e is None: e.index = i
 
     def get_item(self, index):
         self.test_count()
