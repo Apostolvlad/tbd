@@ -111,8 +111,7 @@ class Table(db.Model):
         return True # ИД добавленной строки
     
     def get_row(self, index):
-        if index < self.rows.count(): return self.rows[index]
-        return None
+        return self.rows.filter_by(id = index).first()
 
     def del_row(self, index):
         row = self.get_row(index)
@@ -126,9 +125,7 @@ class Table(db.Model):
         #db.session.commit()
         return True
     
-    def get_col(self, index_col):
-        if self.cols.count() > 0 and self.cols.count() > index_col: return self.cols[index_col]
-        return False
+    def get_col(self, index_col): return self.cols.filter_by(id = index_col).first()
 
     def del_col(self, index_col):
         col = self.get_col(index_col)
