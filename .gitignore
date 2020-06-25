@@ -36,7 +36,7 @@ nosetests.xml
 .pydevproject
 
 venv
+scripts
 app.db
-microblog.log*
 log.log*
-run.cmd
+*.cmd
